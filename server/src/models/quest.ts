@@ -1,9 +1,9 @@
 import { DataTypes, Model } from 'https://deno.land/x/denodb/mod.ts'
 
-import { ACCOUNT_TYPE } from '../enums.ts'
+import { QUEST_TYPE } from '../enums.ts'
 
-export default class Account extends Model {
-  static table = 'accounts'
+export default class Quest extends Model {
+  static table = 'quests'
   static timestamps = true
 
   static fields = {
@@ -17,18 +17,16 @@ export default class Account extends Model {
       unique: true,
       allowNull: false,
     },
-    password: DataTypes.STRING,
+    description: DataTypes.TEXT,
     type: DataTypes.INTEGER,
-    premiumEndAt: DataTypes.DATETIME,
   }
 
   static defaults = {
-    type: ACCOUNT_TYPE.NORMAL,
+    type: QUEST_TYPE.TIME,
   }
 
   id!: number
   name!: string
-  password!: string
-  type!: ACCOUNT_TYPE
-  premiumEndAt!: Date
+  description!: string
+  type!: number
 }

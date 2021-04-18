@@ -5,3 +5,8 @@ export enum ACCOUNT_TYPE {
   GAMEMASTER = 4,
   GOD = 5,
 }
+
+export enum QUEST_TYPE {
+  TIME = 1,
+  INTERACTIVE = 2,
+}

@@ -27,4 +27,8 @@ export default class Player extends Model {
   static account() {
     return this.hasOne(Account)
   }
+
+  id!: number
+  name!: string
+  accountId!: number
 }

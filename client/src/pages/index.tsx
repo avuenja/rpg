@@ -12,6 +12,7 @@ export default function Home(props: Props) {
   useEffect(() => {
     ws = new WebSocket(props.wsUrl)
     ws.addEventListener('open', onConnectionOpen)
+    ws.addEventListener('message', onMessage)
   }, [])
 
   const onConnectionOpen = () => {
@@ -22,11 +23,27 @@ export default function Home(props: Props) {
     ws.send(JSON.stringify(data))
   }
 
+  const onMessage = (event) => {
+    console.log('Message from server ', event.data)
+  }
+
+  const senMessage = () => {
+    const data = {
+      event: 'message',
+      data: {
+        message: 'Hello WebSocket!',
+      },
+    }
+
+    ws.send(JSON.stringify(data))
+  }
+
   return (
     <>
       <Head>
         <title>RPG Client</title>
       </Head>
+      <button onClick={senMessage}>send message: socket</button>
     </>
   )
 }

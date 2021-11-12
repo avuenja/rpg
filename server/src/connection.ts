@@ -1,25 +1,38 @@
-import { WebSocket } from 'https://deno.land/std@0.93.0/ws/mod.ts'
-
 export default class Connection {
-  socket: WebSocket
+  private socket: WebSocket
 
   constructor(socket: WebSocket) {
     this.socket = socket
   }
 
-  async listen() {
-    for await (const conn of this.socket) {
-      if (typeof conn === 'string') {
-        console.log(conn)
-      }
+  listen() {
+    this.socket.onopen = () => {
+      console.log('WebSocket connection established.')
+    }
+
+    this.onMessage()
+  }
+
+  send(event: string) {
+    this.socket.send(event)
+  }
+
+  onMessage() {
+    this.socket.onmessage = (event) => {
+      console.log('onmessage', event.data)
+      this.close()
     }
   }
 
-  async send(event: string) {
-    await this.socket.send(event)
+  onError() {
+    this.socket.onerror = (e) =>
+      console.error(
+        'WebSocket error:',
+        e instanceof ErrorEvent ? e.message : e.type
+      )
   }
 
-  async close() {
-    await this.socket.close()
+  close() {
+    this.socket.onclose = () => console.log('WebSocket has been closed.')
   }
 }

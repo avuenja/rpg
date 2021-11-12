@@ -1,4 +1,4 @@
-import { config as env } from 'https://deno.land/x/dotenv/mod.ts'
+import { env } from './deps.ts'
 
 import Server from './src/server.ts'
 import Database from './src/database.ts'
@@ -13,8 +13,7 @@ const database = new Database(
   config.DB_PASSWORD
 )
 
-server.listen()
-database.connect()
+await server.listen()
 
 database.link()
 await database.sync()

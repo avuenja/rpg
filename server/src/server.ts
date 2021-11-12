@@ -1,34 +1,28 @@
-import { listenAndServe } from 'https://deno.land/std@0.93.0/http/server.ts'
-import {
-  acceptWebSocket,
-  acceptable,
-} from 'https://deno.land/std@0.93.0/ws/mod.ts'
-
 import Connection from './connection.ts'
 
 export default class Server {
-  port: number
+  private port: number
 
   constructor(port = 8080) {
     this.port = port
   }
 
-  listen() {
-    listenAndServe({ port: this.port }, async (req) => {
-      if (acceptable(req)) {
-        const { conn, r: bufReader, w: bufWriter, headers } = req
+  async listen() {
+    const listener = await Deno.listen({ port: this.port })
 
-        const webSocket = await acceptWebSocket({
-          conn,
-          bufReader,
-          bufWriter,
-          headers,
-        })
+    for await (const conn of listener) {
+      const httpConn = Deno.serveHttp(conn)
+      const reqEvent = await httpConn.nextRequest()
 
-        const connection = new Connection(webSocket)
+      if (reqEvent) {
+        const { socket, response } = Deno.upgradeWebSocket(reqEvent.request)
+
+        const connection = new Connection(socket)
         connection.listen()
+
+        reqEvent.respondWith(response)
       }
-    })
+    }
 
     console.log(`Server liten on port: ${this.port}`)
   }

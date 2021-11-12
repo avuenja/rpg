@@ -1,8 +1,4 @@
-import {
-  DataTypes,
-  Model,
-  Relationships,
-} from 'https://deno.land/x/denodb/mod.ts'
+import { DataTypes, Model, Relationships } from '../../deps.ts'
 
 import Account from './account.ts'
 
@@ -21,7 +17,6 @@ export default class Player extends Model {
       unique: true,
       allowNull: false,
     },
-    accountId: Relationships.belongsTo(Account),
   }
 
   static account() {
@@ -30,5 +25,6 @@ export default class Player extends Model {
 
   id!: number
   name!: string
-  accountId!: number
 }
+
+Relationships.belongsTo(Player, Account)
